@@ -1,0 +1,31 @@
+{
+  "name": "grapesjs-blockly",
+  "version": "1.0.0",
+  "description": "Grapesjs Blockly",
+  "main": "dist/grapesjs-blockly.min.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ju99ernaut/grapesjs-blockly.git"
+  },
+  "scripts": {
+    "start": "grapesjs-cli serve",
+    "build": "grapesjs-cli build",
+    "build:css": "node-sass src/styles.scss dist/grapesjs-indexeddb-ui.min.css --output-style compressed",
+    "bump": "npm version patch -m 'Bump v%s'"
+  },
+  "keywords": [
+    "grapesjs",
+    "plugin"
+  ],
+  "devDependencies": {
+    "grapesjs-cli": "^1.0.12",
+    "node-sass": "^4.14.1"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "acorn": "^7.4.0",
+    "acorn-dynamic-import": "^4.0.0",
+    "blockly": "^3.20200625.2",
+    "node-blockly": "^1.2.8"
+  }
+}
