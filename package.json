@@ -1,6 +1,6 @@
 {
   "name": "grapesjs-blockly",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Grapesjs Blockly",
   "main": "dist/grapesjs-blockly.min.js",
   "repository": {
