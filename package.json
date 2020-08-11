@@ -25,7 +25,6 @@
   "dependencies": {
     "acorn": "^7.4.0",
     "acorn-dynamic-import": "^4.0.0",
-    "blockly": "^3.20200625.2",
-    "node-blockly": "^1.2.8"
+    "blockly": "^3.20200625.2"
   }
 }
