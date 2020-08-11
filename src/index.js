@@ -12,26 +12,27 @@ export default (editor, opts = {}) => {
         workspaceOptions: {}
       },
 
-      // Starter code
-      starter: 'var el = this',
+      // Starter xml
+      starter: '<xml xmlns="https://developers.google.com/blockly/xml"><block type="bi_var" id="OHq;p^O:()AR3;aG%CwD" x="90" y="30"><field name="var_type">let</field><field name="var">el</field><value name="val"><block type="bi_var_name" id="Je,,~AE%W2MCRA?7u.^0"><field name="NAME">this</field></block></value></block></xml>',
 
       toolbarIcon: '<i class="fa fa-puzzle-piece"></i>',
 
-      // Component types to give logic support
-      logicTypesSupport: ['default', 'wrapper', 'text', 'textnode', 'image', 'video', 'svg'],
+      // Component types to allow script editing
+      // Avoid components with predefined scripts
+      blocklyTypesSupport: ['default', 'wrapper', 'text', 'textnode', 'image', 'video', 'svg'],
 
-      // Object to extend the default component's toolbar button for the code, eg. `{ label: '</>', attributes: { title: 'Open custom code' } }`
+      // Object to extend the default component's toolbar button for the code, eg. `{ label: '</>', attributes: { title: 'Open blockly editor' } }`
       // Pass a falsy value to avoid adding the button
-      toolbarBtnCustomCode: {},
+      toolbarBtnBlockly: {},
 
       // On run success
-      onRun: () => console.log('success'),
+      onRun: () => console.log('valid syntax'),
 
       // Logic when there is an error on run
-      onSyntaxError: err => console.log('error', err),
+      onError: err => console.log('error', err),
 
-      // Title for the custom code modal
-      modalTitle: 'Insert your logic',
+      // Title for the blockly modal
+      modalTitle: 'Blockly',
 
       // Additional options for the code viewer, eg. `{ theme: 'hopscotch', readOnly: 0 }`
       codeViewOptions: {},
@@ -39,9 +40,9 @@ export default (editor, opts = {}) => {
       // Label for the default save button
       buttonLabel: 'Save',
 
-      // Object to extend the default inject logic command.
+      // Object to extend the default blockly command.
       // Check the source to see all available methods
-      commandInjectLogic: {},
+      commandBlocklyScript: {},
     },
     ...opts
   };
@@ -53,14 +54,4 @@ export default (editor, opts = {}) => {
 
   // load commands
   commands(editor, options);
-
-  // TODO Remove
-  editor.on('load', () =>
-    editor.addComponents(
-      `<div style="margin:100px; padding:25px;">
-            Content loaded from the plugin
-        </div>`, {
-        at: 0
-      }
-    ))
 };

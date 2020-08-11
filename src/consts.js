@@ -1,3 +1,3 @@
 export const
-    cmdId = 'inject-logic',
+    cmdId = 'blockly-script',
     keyBlocklyXml = 'blockly-xml';

@@ -1,9 +1,10 @@
 # Grapesjs Blockly
 
-[DEMO](##)
-> **Provide a live demo of your plugin**
-For a better user engagement create a simple live demo by using services like [JSFiddle](https://jsfiddle.net) [CodeSandbox](https://codesandbox.io) [CodePen](https://codepen.io) and link it here in your README (attaching a screenshot/gif will also be a plus).
-To help you in this process here below you will find the necessary HTML/CSS/JS, so it just a matter of copy-pasting on some of those services. After that delete this part and update the link above
+Attach code generated from `google blockly` to a component
+
+<p align="center">
+  <img alt="screenshot.png" src="screenshot.png"/>
+</p>
 
 ### HTML
 ```html
@@ -37,22 +38,25 @@ body, html {
 ## Summary
 
 * Plugin name: `grapesjs-blockly`
-* Components
-    * `component-id-1`
-    * `component-id-2`
-    * ...
-* Blocks
-    * `block-id-1`
-    * `block-id-2`
-    * ...
-
+* Commands
+    * `blockly-script`
 
 
 ## Options
 
 | Option | Description | Default |
 |-|-|-
-| `option1` | Description option | `default value` |
+| `blocklyOptions` | Options to pass to blockly on init, `toolbox` defines blockly toolbox, `workspaceOptions` defines blockly injection options | `{toolbox: '', workspaceOptions: {}}` |
+| `starter` | Canvas starter blocks, defaulf setting generates `let el = this` | `<xml xmlns=...>...</xml>` |
+| `toolbarIcon` | Toolbar icon for opening blockly modal | `<i class="fa fa-puzzle-piece"></i>` | 
+| `blocklyTypesSupport` | Component types to allow script editing from blockly, `avoid components with predefined scripts or scripts set elsewhere` | `['default', 'wrapper', 'text', 'textnode', 'image', 'video', 'svg']` |
+| `toolbarBtnBlockly` | Options to pass when extending toolbar | `{}` |
+| `onRun` | Logic to run if debug is successful | `() => console.log('valid syntax')` |
+| `onError` | Logic to run if debug finds errors | `err => console.log('error:',err)` |
+| `modalTitle` | Title for blockly modal | `Blockly` |
+| `codeViewOptions` | Additional options for the code viewer | `{}` |
+| `buttonLabel` | Label for the default save button | `save` |
+| `commandBlocklyScript` | Object to extend the default `blockly-script` command | `{}` |
 
 
 

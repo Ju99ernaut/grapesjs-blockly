@@ -1,11 +1,9 @@
 import {
-    cmdId
+    cmdId,
+    keyBlocklyXml
 } from './consts';
 import Blockly from 'blockly';
 import BlocklyEditor from './blocklyEditor';
-import {
-    parseCode
-} from './utils/js2blocks';
 
 export default (editor, opts = {}) => {
     const cm = editor.Commands;
@@ -14,9 +12,9 @@ export default (editor, opts = {}) => {
     const {
         modalTitle,
         codeViewOptions,
-        commandInjectLogic,
+        commandBlocklyScript,
         blocklyOptions,
-        logicTypesSupport,
+        blocklyTypesSupport,
         toolbarIcon,
         onRun,
         onError,
@@ -34,8 +32,8 @@ export default (editor, opts = {}) => {
         }
     };
 
-    //? Add icons specified scriptless component types
-    logicTypesSupport && logicTypesSupport.forEach(type => {
+    // Add icons to specified component types
+    blocklyTypesSupport && blocklyTypesSupport.forEach(type => {
         const typeOpt = domc.getType(type).model;
         domc.addType(type, {
             model: {
@@ -48,6 +46,7 @@ export default (editor, opts = {}) => {
                         tb.unshift({
                             command: cmdId,
                             label: toolbarIcon,
+                            ...opts.toolbarBtnBlockly
                         });
                         this.set('toolbar', tb);
                     }
@@ -56,8 +55,10 @@ export default (editor, opts = {}) => {
         });
     })
 
-    // Add the custom code command
+    // Add the blockly command
     cm.add(cmdId, {
+        keyBlocklyXml,
+
         run(editor, sender, opts = {}) {
             this.editor = editor;
             this.options = opts;
@@ -69,6 +70,7 @@ export default (editor, opts = {}) => {
 
         stop(editor) {
             //blocklyEditor && blocklyEditor.hide();
+            blocklyEditor.workspace.clear();
             md.close();
         },
 
@@ -83,61 +85,36 @@ export default (editor, opts = {}) => {
             } = this;
             const title = options.title || modalTitle;
             if (!content) content = this.getContent();
-            const code = target.get('script') || starter;
+            const xml = target.get(keyBlocklyXml) || starter;
             md.open({
                 title,
                 content
             }).getModel().once('change:open', () => editor.stopCommand(this.id));
-            //? create blockly if none, parse target script if present, refresh the editors(set contents)
             //? mount code editors
             if (!blocklyEditor) {
                 blocklyEditor = new BlocklyEditor(content.querySelector('#blockly'), blocklyOptions);
                 blocklyEditor.workspace.addChangeListener(() => this.updateWorkspace());
             }
-            this.getCodeViewer().setContent(code);
+            Blockly.Xml.domToWorkspace(blocklyEditor.workspace, Blockly.Xml.textToDom(xml));
         },
 
         /**
          * Custom pre-content. Can be a simple string or an HTMLElement
          */
-        getPreContent() {
-            const preContent = document.createElement('div');
-            preContent.id = "logic-toolbar";
-            const runLogic = document.createElement('div');
-            runLogic.id = "logic-toolbar";
-            runLogic.className = "fa fa-bug";
-            const toggle = document.createElement('div');
-            toggle.id = "toggle-code-view";
-            toggle.className = "fa fa-code";
-            const sync = document.createElement('div');
-            sync.id = "sync-logic";
-            sync.className = "fa fa-refresh";
-
-            runLogic.onclick = () => this.runCode();
-            toggle.onclick = () => this.toggleCodeViewer();
-            sync.onclick = () => this.copyGen();
-
-            preContent.appendChild(runLogic);
-            preContent.appendChild(toggle);
-            preContent.appendChild(sync);
-
-            return preContent; //toolbar el
-        },
+        getPreContent() {},
 
         /**
          * Custom post-content. Can be a simple string or an HTMLElement
          */
         getPostContent() {
             const postContent = document.createElement('div');
-            postContent.id = "blockly-cont";
-            postContent.innerHTML = `
-                <div id="blockly" style="width:100%;height:500px;color:grey"></div>
-                <div id="read-only-cont" style="display:none"></div>
-                `;
+            postContent.id = "code-viewer";
+            const codeViewer = this.getCodeViewer();
+            codeViewer.refresh();
+            setTimeout(() => codeViewer.focus(), 0);
+            postContent.appendChild(codeViewer.getElement());
 
-            postContent.children[1].appendChild(this.getCodeGen().getElement());
-
-            return postContent; //blockly el and hidden readonly input
+            return postContent; //blockly el
         },
 
         /**
@@ -149,19 +126,15 @@ export default (editor, opts = {}) => {
                 editor
             } = this;
             const content = document.createElement('div');
-            const codeCont = document.createElement('div');
-            codeCont.id = "code-viewer";
-            codeCont.style.display = "none";
-            const codeViewer = this.getCodeViewer();
+            const blocklyCont = document.createElement('div');
+            blocklyCont.id = "blockly-cont";
+            blocklyCont.innerHTML = `<div id="blockly" style="width:100%;height:400px;color:grey"></div>`;
             const pfx = editor.getConfig('stylePrefix');
             content.className = `${pfx}inject-logic`;
             appendToContent(content, this.getPreContent());
-            codeCont.appendChild(codeViewer.getElement());
-            content.appendChild(codeCont);
+            content.appendChild(blocklyCont);
             appendToContent(content, this.getPostContent());
             appendToContent(content, this.getContentActions());
-            codeViewer.refresh();
-            setTimeout(() => codeViewer.focus(), 0);
 
             return content;
         },
@@ -174,13 +147,25 @@ export default (editor, opts = {}) => {
             const {
                 editor
             } = this;
+            const actions = document.createElement('div');
+            actions.id = "actns";
+            actions.style = "position:absolute;bottom:260px;right:20px;z-index:2";
             const btn = document.createElement('button');
             const pfx = editor.getConfig('stylePrefix');
             btn.innerHTML = opts.buttonLabel;
             btn.className = `${pfx}btn-prim ${pfx}btn-save__inject-logic`;
             btn.onclick = () => this.handleSave();
 
-            return btn;
+            const runLogic = document.createElement('div');
+            runLogic.id = "logic-toolbar";
+            runLogic.className = "fa fa-bug";
+            runLogic.style = "margin:5px;padding:10px;background:rgba(0,0,0,0.2);border-radius:3px;border:1px solid rgba(0,0,0,0.2);cursor:pointer";
+            runLogic.onclick = () => this.runCode();
+
+            actions.appendChild(runLogic);
+            actions.appendChild(btn);
+
+            return actions;
         },
 
         /**
@@ -191,9 +176,10 @@ export default (editor, opts = {}) => {
                 editor,
                 target
             } = this;
-            const code = this.getCodeGen().getContent();
-            //? Reload component if required
+            const code = this.getCodeViewer().getContent();
+            const xml = Blockly.Xml.workspaceToDom(blocklyEditor.workspace);
             target.set('script', code);
+            target.set(keyBlocklyXml, Blockly.Xml.domToText(xml));
             editor.Modal.close();
         },
 
@@ -210,38 +196,18 @@ export default (editor, opts = {}) => {
                 this.codeViewer = editor.CodeManager.createViewer({
                     codeName: 'javascript',
                     theme: 'hopscotch',
-                    readOnly: 0,
-                    autoBeautify: 1,
-                    ...codeViewOptions,
-                });
-                this.codeViewer.getElement().onChange = () => parseCode(this.codeViewer.getContent());
-            }
-
-            return this.codeViewer;
-        },
-
-        /**
-         * Return the code generated instance
-         * @return {CodeGen}
-         */
-        getCodeGen() {
-            const {
-                editor
-            } = this;
-
-            if (!this.codeGen) {
-                this.codeGen = editor.CodeManager.createViewer({
-                    codeName: 'javascript',
-                    theme: 'hopscotch',
                     readOnly: 1,
                     autoBeautify: 1,
                     ...codeViewOptions,
                 });
             }
 
-            return this.codeGen;
+            return this.codeViewer;
         },
 
+        /**
+         * Toggle between blockly and code viewer
+         */
         toggleCodeViewer() {
             const blocklyStyle = content.querySelector('#blockly').style;
             const codeViewerStyle = content.querySelector('#code-viewer').style;
@@ -255,39 +221,34 @@ export default (editor, opts = {}) => {
             }
         },
 
-        copyGen() {
-            //console.log("copyEd2_Ed1")
-
-            // get generated from readonly
-            const code = this.getCodeViewer().getContent();
-            // check code && set editor to generated;
-            parseCode(code) && this.getCodeViewer().setContent(code);
-        },
-
+        /**
+         * Update code when blocks change
+         */
         updateWorkspace(e) {
-            console.log("updateWorkspace");
             let blockly_code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
             try {
                 // set readonly from generated
-                this.getCodeGen().setContent(blockly_code);
+                this.getCodeViewer().setContent(blockly_code);
             } catch (e) {
                 // readonly not found.
             }
         },
 
+        /**
+         * Evaluate code syntax
+         */
         runCode() {
             //console.log("run")
             try {
-                // JCOA: Is there a safe eval with debug options?
-                // eslint-disable-next-line
-                code = this.getCodeViewer().getContent();
-                eval(code); // final code
+                const code = this.getCodeViewer().getContent();
+                Function('"use strict";' + code)(); // final code
                 onRun && onRun();
             } catch (err) {
+                console.log("error", err);
                 onError && onError(err);
             }
         },
 
-        ...commandInjectLogic,
+        ...commandBlocklyScript,
     });
 }
