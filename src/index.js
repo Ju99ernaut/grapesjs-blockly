@@ -1,4 +1,3 @@
-import Blockly from 'blockly';
 import biBlocks from './utils/bi_blockly/blocks/bi_blockly';
 import biBlocksJS from './utils/bi_blockly/generators/javascript/bi_blockly';
 import commands from './commands';
@@ -46,6 +45,12 @@ export default (editor, opts = {}) => {
     },
     ...opts
   };
+
+
+
+  if (!Blockly) {
+    throw new Error('Blockly instance not found');
+  }
 
   // set blockly globally
   biBlocks(Blockly);

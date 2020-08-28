@@ -27,7 +27,6 @@
 import {
     parse
 } from 'acorn';
-import Blockly from 'blockly';
 //import acorn from 'acorn-dynamic-import';
 //import walk, { base } from 'acorn-jsx-walk';
 //import walk from 'acorn/dist/walk.js'

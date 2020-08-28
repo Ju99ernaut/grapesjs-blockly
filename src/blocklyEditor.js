@@ -1,5 +1,3 @@
-import Blockly from 'blockly';
-
 export default class BlocklyEditor {
     constructor(div, opts = {}) {
         const toolbox = opts.toolbox || `

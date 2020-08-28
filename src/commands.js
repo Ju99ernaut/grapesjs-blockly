@@ -2,7 +2,6 @@ import {
     cmdId,
     keyBlocklyXml
 } from './consts';
-import Blockly from 'blockly';
 import BlocklyEditor from './blocklyEditor';
 
 export default (editor, opts = {}) => {
@@ -65,7 +64,7 @@ export default (editor, opts = {}) => {
             this.target = opts.target || editor.getSelected();
             const target = this.target;
 
-            if (target && target.get('editable')) this.showCustomCode(target);
+            if (target) this.showCustomCode(target);
         },
 
         stop(editor) {
@@ -95,7 +94,7 @@ export default (editor, opts = {}) => {
                 blocklyEditor = new BlocklyEditor(content.querySelector('#blockly'), blocklyOptions);
                 blocklyEditor.workspace.addChangeListener(() => this.updateWorkspace());
             }
-            Blockly.Xml.domToWorkspace(blocklyEditor.workspace, Blockly.Xml.textToDom(xml));
+            Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xml), blocklyEditor.workspace);
         },
 
         /**
