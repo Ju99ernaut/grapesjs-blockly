@@ -406,10 +406,10 @@ export function walk1(ast, comments, block_loc, options) {
     var last_comment = 0
     options.joinTopBlocks = options.joinTopBlocks || false
 
-    var goog = Blockly.goog;
+    var createElement = Blockly.utils.xml.createElement;
 
     //var xml = ['xml'];
-    var xml1 = goog.dom.createDom('xml');
+    var xml1 = createElement('xml');
     var root_node = xml1;
     var current_node = root_node;
     //var variable_next = null;
@@ -427,7 +427,7 @@ export function walk1(ast, comments, block_loc, options) {
             console.log(id + ' ' + ast_node.loc.start.line);
             attrs.id = id;
             id += 1;
-            block1 = goog.dom.createDom('block');
+            block1 = createElement('block');
 
             let comm1
             let first = true
@@ -435,7 +435,7 @@ export function walk1(ast, comments, block_loc, options) {
             while (i < comments.length && comments[i].loc.start.line <= ast_node.loc.start.line) {
                 if (first) {
                     first = false
-                    comm1 = goog.dom.createDom("comment")
+                    comm1 = createElement('comment')
                     comm1.setAttribute('pinned', 'false')
                     comm1.append(comments[i].value)
                     block1.append(comm1)
@@ -446,7 +446,7 @@ export function walk1(ast, comments, block_loc, options) {
             }
             last_comment = i
         } else {
-            block1 = goog.dom.createDom(name);
+            block1 = createElement(name);
         }
         for (var key in attrs) {
             block1.setAttribute(key, attrs[key]);
@@ -1989,8 +1989,8 @@ export function parseCode(code) {
         xml1 = walk1(ast1, comments, block_loc);
         //console.log(xml1);
         workspace.clear();
-        Blockly.Xml.domToWorkspace(workspace, xml1);
-        workspace.cleanUp_(); // workspace.cleanUp(); // In updated Blockly 
+        Blockly.Xml.domToWorkspace(xml1, workspace);
+        workspace.cleanUp(); // workspace.cleanUp_(); // In old Blockly 
         //window._BIDE.updateWorkspace()
         //workspace.addChangeListener(window._BIDE.updateWorkspace);
         //var blockly_code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);

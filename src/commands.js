@@ -2,6 +2,9 @@ import {
     cmdId,
     keyBlocklyXml
 } from './consts';
+import {
+    parseCode
+} from './utils/js2blocks';
 import BlocklyEditor from './blocklyEditor';
 
 export default (editor, opts = {}) => {
@@ -84,7 +87,7 @@ export default (editor, opts = {}) => {
             } = this;
             const title = options.title || modalTitle;
             if (!content) content = this.getContent();
-            const xml = target.get(keyBlocklyXml) || starter;
+            const code = target.getScriptString();
             md.open({
                 title,
                 content
@@ -94,6 +97,7 @@ export default (editor, opts = {}) => {
                 blocklyEditor = new BlocklyEditor(content.querySelector('#blockly'), blocklyOptions);
                 blocklyEditor.workspace.addChangeListener(() => this.updateWorkspace());
             }
+            const xml = target.get(keyBlocklyXml) || (code && parseCode(code)) || starter;
             Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xml), blocklyEditor.workspace);
         },
 
