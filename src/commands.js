@@ -2,9 +2,9 @@ import {
     cmdId,
     keyBlocklyXml
 } from './consts';
-import {
-    parseCode
-} from './utils/js2blocks';
+//import {
+//    parseCode
+//} from './utils/js2blocks';
 import BlocklyEditor from './blocklyEditor';
 
 export default (editor, opts = {}) => {
@@ -97,7 +97,7 @@ export default (editor, opts = {}) => {
                 blocklyEditor = new BlocklyEditor(content.querySelector('#blockly'), blocklyOptions);
                 blocklyEditor.workspace.addChangeListener(() => this.updateWorkspace());
             }
-            const xml = target.get(keyBlocklyXml) || (code && parseCode(code)) || starter;
+            const xml = target.get(keyBlocklyXml) || starter; //(code && parseCode(code)) || starter;
             Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xml), blocklyEditor.workspace);
         },
 
@@ -228,13 +228,21 @@ export default (editor, opts = {}) => {
          * Update code when blocks change
          */
         updateWorkspace(e) {
-            let blockly_code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
+            const blockly_code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
             try {
                 // set readonly from generated
                 this.getCodeViewer().setContent(blockly_code);
             } catch (e) {
                 // readonly not found.
             }
+        },
+
+        /**
+         * Syncronize blockly when code changes
+         */
+        sync() {
+            const code = this.getCodeViewer().getContent();
+            //parseCode(code);
         },
 
         /**
