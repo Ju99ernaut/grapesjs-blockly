@@ -8,6 +8,7 @@ export default (editor, opts = {}) => {
       // Blockly options
       blocklyOptions: {
         toolbox: '',
+        toolboxPush: '',
         workspaceOptions: {}
       },
 
