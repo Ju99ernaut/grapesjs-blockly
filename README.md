@@ -2,6 +2,8 @@
 
 Attach code generated from `google blockly` to a component
 
+>Requires `Blockly` and `@blockly/block-plus-minus` plugin recommended
+
 <p align="center">
   <img alt="screenshot.png" src="screenshot.png"/>
 </p>
@@ -10,6 +12,7 @@ Attach code generated from `google blockly` to a component
 ```html
 <link href="https://unpkg.com/grapesjs/dist/css/grapes.min.css" rel="stylesheet">
 <script src="https://unpkg.com/grapesjs"></script>
+<script src="https://unpkg.com/blockly"></script>
 <script src="https://unpkg.com/grapesjs-blockly"></script>
 
 <div id="gjs"></div>
@@ -46,7 +49,7 @@ body, html {
 
 | Option | Description | Default |
 |-|-|-
-| `blocklyOptions` | Options to pass to blockly on init, `toolbox` defines blockly toolbox, `workspaceOptions` defines blockly injection options | `{toolbox: '', workspaceOptions: {}}` |
+| `blocklyOptions` | Options to pass to blockly on init, `toolbox` defines blockly toolbox, `workspaceOptions` defines blockly injection options, `toolbox` will overwrite the default and `toolboxPush` will add to default | `{toolbox: '', toolboxPush: '', workspaceOptions: {}}` |
 | `starter` | Canvas starter blocks, defaulf setting generates `let el = this` | `<xml xmlns=...>...</xml>` |
 | `toolbarIcon` | Toolbar icon for opening blockly modal | `<i class="fa fa-puzzle-piece"></i>` | 
 | `blocklyTypesSupport` | Component types to allow script editing from blockly, `avoid components with predefined scripts or scripts set elsewhere` | `['default', 'wrapper', 'text', 'textnode', 'image', 'video', 'svg']` |
@@ -77,6 +80,7 @@ Directly in the browser
 ```html
 <link href="https://unpkg.com/grapesjs/dist/css/grapes.min.css" rel="stylesheet"/>
 <script src="https://unpkg.com/grapesjs"></script>
+<script src="path/to/blockly"></script>
 <script src="path/to/grapesjs-blockly.min.js"></script>
 
 <div id="gjs"></div>
@@ -97,6 +101,7 @@ Modern javascript
 ```js
 import grapesjs from 'grapesjs';
 import plugin from 'grapesjs-blockly';
+import Blockly from 'blockly';
 import 'grapesjs/dist/css/grapes.min.css';
 
 const editor = grapesjs.init({
