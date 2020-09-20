@@ -8,6 +8,8 @@ Attach code generated from `google blockly` to a component
   <img alt="screenshot.png" src="screenshot.png"/>
 </p>
 
+[DEMO](https://codepen.io/ju99ernaut/pen/ExKOxKg)
+
 ### HTML
 ```html
 <link href="https://unpkg.com/grapesjs/dist/css/grapes.min.css" rel="stylesheet">
