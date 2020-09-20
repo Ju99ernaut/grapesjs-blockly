@@ -2,7 +2,7 @@
 
 Attach code generated from `google blockly` to a component
 
->Requires `Blockly` and `@blockly/block-plus-minus` plugin recommended
+>Requires `Blockly` and `@blockly/block-plus-minus` plugin recommended. Try adding after all components  
 
 <p align="center">
   <img alt="screenshot.png" src="screenshot.png"/>
